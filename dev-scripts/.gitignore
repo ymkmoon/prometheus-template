@@ -122,3 +122,5 @@ build/
 # geomap file
 temp/
 unzip/
+
+prometheus/

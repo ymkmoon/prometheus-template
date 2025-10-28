@@ -11,7 +11,6 @@ prometheus-template/
 ├── docker-compose.yml      # 메인 Docker Compose 파일
 ├── prometheus/             # Prometheus 설정 디렉토리
 │   └── prometheus.yml      # Prometheus 구성 파일 (Blackbox 타겟 포함)
-│   └── Dockerfile      # Prometheus 구성 파일 (Blackbox 타겟 포함)
 ├── blackbox/               # Blackbox Exporter 설정 디렉토리
 │   └── blackbox.yml        # Blackbox 구성 파일
 ├── grafana/                # Grafana 설정 디렉토리 (프로비저닝용)
@@ -28,14 +27,13 @@ prometheus-template/
 ### 2. 이미지 빌드 및 컨테이너 실행 
 
 ```bash
-docker build -t prometheus-custom ./prometheus
-
-# 로컬 환경
-docker compose -p prometheus-template --env-file .env.local up -d
-
 # 개발 환경
 docker compose -p prometheus-template --env-file .env.dev down
 docker compose -p prometheus-template --env-file .env.dev up -d
+
+# 검수 환경
+docker compose -p prometheus-template --env-file .env.stg down
+docker compose -p prometheus-template --env-file .env.stg up -d
 ```
 
 ### 3. 모니터링
