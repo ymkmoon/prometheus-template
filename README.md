@@ -34,6 +34,10 @@ docker compose -p prometheus-template --env-file .env.dev up -d
 # 검수 환경
 docker compose -p prometheus-template --env-file .env.stg down
 docker compose -p prometheus-template --env-file .env.stg up -d
+
+# 서비스 환경
+docker compose -p prometheus-template --env-file .env.prd down
+docker compose -p prometheus-template --env-file .env.prd up -d
 ```
 
 ### 3. 모니터링
