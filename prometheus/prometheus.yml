@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # HTTP 200 OK 체크 모듈
+    static_configs:
+      - targets:
+        - http://${API_HOST}:${API_PORT}/${CONTEXT_PATH}  # 동적 타겟 (API 서버 엔드포인트)
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115  # Blackbox Exporter 주소
+
+  - job_name: 'api-metrics' # API 내부 메트릭스 scrape 
+    metrics_path: /actuator/prometheus # Actuator 경로 (필요시 .env로 동적화) 
+    static_configs: 
+      - targets: ['${API_HOST}:${API_PORT}'] # .env 변수 사용으로 확장성 유지 
+      # 보안이 필요하면 scheme: https나 authorization 추가

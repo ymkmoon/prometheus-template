@@ -1,27 +1,40 @@
 services:
   prometheus:
-    image: prom/prometheus:latest
+    build: ./prometheus  # Dockerfile 사용
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    restart: always
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus
+    environment:
+      - API_HOST=${API_HOST}
+      - API_PORT=${API_PORT}
+      - CONTEXT_PATH=${CONTEXT_PATH}
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
-      - grafana-data:/var/lib/grafana
+      - ./grafana/data:/var/lib/grafana  # Grafana 데이터 볼륨
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    restart: unless-stopped
     depends_on:
       - prometheus
-    restart: always
 
-volumes:
-  grafana-data:
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox/blackbox.yml:/etc/blackbox/blackbox.yml
+    command:
+      - '--config.file=/etc/blackbox/blackbox.yml'
+    restart: unless-stopped
