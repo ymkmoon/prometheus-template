@@ -1,0 +1,38 @@
+# ------------------------
+# OS & Editor
+# ------------------------
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ------------------------
+# Docker
+# ------------------------
+# 컨테이너 볼륨 데이터 (Prometheus, Grafana)
+dev-scripts/prometheus/data/
+dev-scripts/grafana/data/
+stg-scripts/prometheus/data/
+stg-scripts/grafana/data/
+prd-scripts/prometheus/data/
+prd-scripts/grafana/data/
+
+# ------------------------
+# 환경 변수 파일
+# ------------------------
+.env.local
+.env
+*.env
+
+# ------------------------
+# 로그 파일
+# ------------------------
+*.log
+
+# ------------------------
+# 기타
+# ------------------------
+node_modules/
+dist/
+build/
